@@ -113,6 +113,15 @@ int read_decrypt_sectors(
 	size_t   nb_loop = 0;
 	size_t   size    = nb_read_sector * sector_size;
 	uint8_t* input   = malloc(size);
+	if (!input)
+	{
+		dis_printf(
+			L_ERROR,
+			"Failed to allocate memory for %#" F_SIZE_T " bytes\n",
+			size
+		);
+		return FALSE;
+	}
 	off_t    off     = sector_start + io_data->part_off;
 
 	memset(input , 0, size);
@@ -220,9 +229,17 @@ int encrypt_write_sectors(
 	if(!io_data || !input)
 		return FALSE;
 
-	uint8_t* output = malloc(nb_write_sector * sector_size);
-
-	memset(output , 0, nb_write_sector * sector_size);
+	uint8_t* output = calloc(nb_write_sector, sector_size);
+	if (!output)
+	{
+		dis_printf(
+			L_ERROR,
+			"Failed to allocate memory for %#" F_SIZE_T " * %#" F_OFF_T " bytes\n",
+			nb_write_sector,
+			sector_size
+		);
+		return FALSE;
+	}
 
 	/* Run threads if compiled with */
 #if NB_THREAD > 0
