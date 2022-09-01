@@ -393,12 +393,12 @@ static void* thread_decrypt(void* params)
 			);
 			memcpy(loop_output, loop_input, sector_size);
 		}
-		else if(version == V_VISTA && (sector_offset < 16 || sector_offset + 1 == encrypted_volume_total_sectors))
+		else if(version == V_VISTA && (sector_offset < 16 || (uint64_t)sector_offset + 1 == encrypted_volume_total_sectors))
 		{
 			/*
 			 * The firsts sectors are not really encrypted on a Vista volume
 			 */
-			if(sector_offset < 1 || sector_offset + 1 == encrypted_volume_total_sectors)
+                  if(sector_offset < 1 || (uint64_t)sector_offset + 1 == encrypted_volume_total_sectors)
 				fix_read_sector_vista(
 					io_data,
 					loop_input,
@@ -477,12 +477,12 @@ static void* thread_encrypt(void* params)
 		 * NOTE: Seven specificities are dealt with earlier in the process
 		 * see dislocker.c:enlock()
 		 */
-		if(version == V_VISTA && (sector_offset < 16 || sector_offset + 1 == encrypted_volume_total_sectors))
+		if(version == V_VISTA && (sector_offset < 16 || (uint64_t)sector_offset + 1 == encrypted_volume_total_sectors))
 		{
 			/*
 			 * The firsts sectors are not really encrypted on a Vista volume
 			 */
-			if(sector_offset < 1 || sector_offset + 1 == encrypted_volume_total_sectors)
+                  if(sector_offset < 1 || (uint64_t)sector_offset + 1 == encrypted_volume_total_sectors)
 				fix_write_sector_vista(
 					io_data,
 					loop_input,
